@@ -12,9 +12,7 @@ const winningCondition = [
   [0, 4, 8],
   [2, 4, 6],
 ];
-function checkWinner() {
-  for (let i = 0; i < winningCondition.length; i++) {}
-}
+let gameStatus;
 let gameIsFinished = false;
 const Players = ["X", "O"];
 function App() {
@@ -49,74 +47,24 @@ function App() {
     setPlayerStatus(Players[Math.round(Math.random())]);
     gameIsFinished = false;
   }
-  let gameStatus;
 
-  if (scoreBoard.every((score) => score !== "")) {
+  function checkWinner() {
+    for (let i = 0; i < winningCondition.length; i++) {
+      if (
+        scoreBoard[winningCondition[i][0]] ===
+          scoreBoard[winningCondition[i][1]] &&
+        scoreBoard[winningCondition[i][1]] ===
+          scoreBoard[winningCondition[i][2]] &&
+        scoreBoard[winningCondition[i][0]] !== ""
+      ) {
+        gameStatus = "Player " + scoreBoard[winningCondition[i][0]] + " won";
+        gameIsFinished = true;
+      }
+    }
+  }
+
+  if (scoreBoard.every((score) => score !== "") && !gameIsFinished) {
     gameStatus = "Tie";
-    gameIsFinished = true;
-  }
-  if (
-    scoreBoard[0] === scoreBoard[1] &&
-    scoreBoard[1] === scoreBoard[2] &&
-    scoreBoard[0] !== ""
-  ) {
-    gameStatus = "Player " + scoreBoard[0] + " won";
-    gameIsFinished = true;
-  }
-  if (
-    scoreBoard[3] === scoreBoard[4] &&
-    scoreBoard[4] === scoreBoard[5] &&
-    scoreBoard[3] !== ""
-  ) {
-    gameStatus = "Player " + scoreBoard[3] + " won";
-    gameIsFinished = true;
-  }
-  if (
-    scoreBoard[6] === scoreBoard[7] &&
-    scoreBoard[7] === scoreBoard[8] &&
-    scoreBoard[6] !== ""
-  ) {
-    gameStatus = "Player " + scoreBoard[7] + " won";
-    gameIsFinished = true;
-  }
-  if (
-    scoreBoard[0] === scoreBoard[3] &&
-    scoreBoard[3] === scoreBoard[6] &&
-    scoreBoard[0] !== ""
-  ) {
-    gameStatus = "Player " + scoreBoard[0] + " won";
-    gameIsFinished = true;
-  }
-  if (
-    scoreBoard[1] === scoreBoard[4] &&
-    scoreBoard[4] === scoreBoard[7] &&
-    scoreBoard[1] !== ""
-  ) {
-    gameStatus = "Player " + scoreBoard[1] + " won";
-    gameIsFinished = true;
-  }
-  if (
-    scoreBoard[2] === scoreBoard[5] &&
-    scoreBoard[5] === scoreBoard[8] &&
-    scoreBoard[2] !== ""
-  ) {
-    gameStatus = "Player " + scoreBoard[3] + " won";
-    gameIsFinished = true;
-  }
-  if (
-    scoreBoard[0] === scoreBoard[4] &&
-    scoreBoard[4] === scoreBoard[8] &&
-    scoreBoard[0] !== ""
-  ) {
-    gameStatus = "Player " + scoreBoard[0] + " won";
-    gameIsFinished = true;
-  }
-  if (
-    scoreBoard[2] === scoreBoard[4] &&
-    scoreBoard[4] === scoreBoard[6] &&
-    scoreBoard[2] !== ""
-  ) {
-    gameStatus = "Player " + scoreBoard[2] + " won";
     gameIsFinished = true;
   }
 
@@ -141,6 +89,7 @@ function App() {
               playerStatus={playerStatus}
               scoreBoard={scoreBoard}
               gameIsFinished={gameIsFinished}
+              checkWinner={checkWinner}
             />
           );
         })}

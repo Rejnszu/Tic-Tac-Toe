@@ -7,19 +7,15 @@ export default function Square(props) {
   const [isClicked, setIsClicked] = useState(false);
 
   function squareActionsHandler() {
-    if (!isClicked && props.playerStatus === "X") {
-      setSquareValue(props.playerStatus);
-      setIsClicked(true);
-    }
-    if (!isClicked && props.playerStatus === "O") {
-      setSquareValue(props.playerStatus);
-      setIsClicked(true);
-    }
     if (!isClicked) {
+      setSquareValue(props.playerStatus);
+      setIsClicked(true);
       props.statusHandler();
       scoreBoard[props.count] = props.playerStatus;
       props.scoreHandler(scoreBoard);
     }
+
+    props.checkWinner();
   }
   useEffect(() => {
     if (props.gameIsFinished) {
