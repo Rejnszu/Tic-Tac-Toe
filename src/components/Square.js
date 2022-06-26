@@ -3,14 +3,14 @@ import React from "react";
 import styles from "./Square.module.css";
 let scoreBoard = ["", "", "", "", "", "", "", "", ""];
 export default function Square(props) {
-  const [squareValue, setSquareValue] = useState("");
   const [isClicked, setIsClicked] = useState(false);
 
   function squareActionsHandler() {
     if (!isClicked) {
-      setSquareValue(props.playerStatus);
       setIsClicked(true);
-      props.statusHandler();
+      if (!props.gameIsFinished) {
+        props.statusHandler();
+      }
       scoreBoard[props.count] = props.playerStatus;
       props.scoreHandler(scoreBoard);
     }
@@ -29,7 +29,7 @@ export default function Square(props) {
       disabled={props.gameIsFinished}
       onClick={squareActionsHandler}
       className={`${styles.square} ${
-        squareValue === "X" ? styles.x : styles.y
+        props.value === "X" ? styles.x : styles.y
       }`}
     >
       {props.value}

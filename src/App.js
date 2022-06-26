@@ -57,7 +57,7 @@ function App() {
           scoreBoard[winningCondition[i][2]] &&
         scoreBoard[winningCondition[i][0]] !== ""
       ) {
-        gameStatus = "Player " + scoreBoard[winningCondition[i][0]] + " won";
+        gameStatus = "Player " + playerStatus + " won";
         gameIsFinished = true;
       }
     }
