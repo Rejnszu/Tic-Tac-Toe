@@ -1,7 +1,9 @@
 import React from "react";
 import Board from "./components/Board";
 import Square from "./components/Square";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import TicContext from "./store/tic-context";
+
 const winningCondition = [
   [0, 1, 2],
   [3, 4, 5],
@@ -14,56 +16,51 @@ const winningCondition = [
 ];
 let gameStatus;
 let gameIsFinished = false;
-const Players = ["X", "O"];
+
 function App() {
-  const [playerStatus, setPlayerStatus] = useState(
-    Players[Math.round(Math.random())]
-  );
+  const context = useContext(TicContext);
+  // const [playerStatus, setPlayerStatus] = useState("X");
 
-  const [scoreBoard, setScoreBoard] = useState([
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-  ]);
+  // function playerStatusHandler() {
+  //   if (playerStatus === "X") {
+  //     setPlayerStatus("O");
+  //   } else {
+  //     setPlayerStatus("X");
+  //   }
+  // }
 
-  function playerStatusHandler() {
-    if (playerStatus === "X") {
-      setPlayerStatus("O");
-    } else {
-      setPlayerStatus("X");
-    }
-  }
-  function scoreBoardHandler(score) {
-    setScoreBoard(score);
-  }
   function resetGame() {
-    setScoreBoard(["", "", "", "", "", "", "", "", ""]);
-    setPlayerStatus(Players[Math.round(Math.random())]);
+    context.scoreBoardHandler([
+      ["", false],
+      ["", false],
+      ["", false],
+      ["", false],
+      ["", false],
+      ["", false],
+      ["", false],
+      ["", false],
+      ["", false],
+    ]);
+    context.playerStatusHandlerX();
     gameIsFinished = false;
   }
 
   function checkWinner() {
     for (let i = 0; i < winningCondition.length; i++) {
       if (
-        scoreBoard[winningCondition[i][0]] ===
-          scoreBoard[winningCondition[i][1]] &&
-        scoreBoard[winningCondition[i][1]] ===
-          scoreBoard[winningCondition[i][2]] &&
-        scoreBoard[winningCondition[i][0]] !== ""
+        context.scoreBoard[winningCondition[i][0]][0] ===
+          context.scoreBoard[winningCondition[i][1]][0] &&
+        context.scoreBoard[winningCondition[i][1]][0] ===
+          context.scoreBoard[winningCondition[i][2]][0] &&
+        context.scoreBoard[winningCondition[i][0]][0] !== ""
       ) {
-        gameStatus = "Player " + scoreBoard[winningCondition[i][0]] + " won";
+        gameStatus = "Player " + context.playerStatus + " won";
         gameIsFinished = true;
       }
     }
   }
 
-  if (scoreBoard.every((score) => score !== "") && !gameIsFinished) {
+  if (context.scoreBoard.every((score) => score[0] !== "") && !gameIsFinished) {
     gameStatus = "Tie";
     gameIsFinished = true;
   }
@@ -74,20 +71,18 @@ function App() {
         {gameIsFinished ? (
           gameIsFinished && <p className="game-status">{gameStatus}</p>
         ) : (
-          <p className="player-status">Current player:{playerStatus}</p>
+          <p className="player-status">Current player:{context.playerStatus}</p>
         )}
       </div>
       <Board>
-        {scoreBoard.map((square, i) => {
+        {context.scoreBoard.map((button, i) => {
           return (
             <Square
+              isClicked={button[1]}
               count={i}
-              value={square}
+              value={button[0]}
               key={i}
-              statusHandler={playerStatusHandler}
-              scoreHandler={scoreBoardHandler}
-              playerStatus={playerStatus}
-              scoreBoard={scoreBoard}
+              playerStatus={context.playerStatus}
               gameIsFinished={gameIsFinished}
               checkWinner={checkWinner}
             />
@@ -98,7 +93,7 @@ function App() {
       {gameIsFinished && (
         <div className="blurred-background">
           <button onClick={resetGame} type="button" className="try-again">
-            Try Again
+            Play again
           </button>
         </div>
       )}
